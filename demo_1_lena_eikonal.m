@@ -14,6 +14,7 @@ addpath(genpath('Toolbox/'));
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Load Lena image, and scale to [0,1]
+pkg load image;
 data.I = imresize(rgb2gray(imread('Data/lena.png')),0.5);
 data.I = double(data.I)./255;
 

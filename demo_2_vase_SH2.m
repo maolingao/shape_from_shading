@@ -38,6 +38,7 @@ data.K = K;
 data.rho = ones(size(data.I));
 
 % Estimate lighting 
+pkg load image;
 data.s = estimate_lighting(data.I,data.rho,data.z0,data.mask_z0,data.K,9);
 
 
