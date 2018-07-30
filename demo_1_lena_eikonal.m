@@ -103,6 +103,7 @@ options.tolX = 0.001*options.tolFun; % Stopping criterion (relative difference o
 options.tolEps = 1e-3; % Stopping criterion (primal dual gap)
 options.beta = 1e0; % Initial stepsize on theta for ADMM iterations
 options.tau = 10.0; % Update beta if primal/dual > tau
+% why if primal/dual > tau, then ultiply beta by eta ?
 options.eta = 2.0; % Multiply beta by eta if primal/dual > tau
 options.use_jac = 0; % 0: user-defined differentiation, 1: numerical
 options.check_grad = 'off'; % Set to 'on' to check jacobian (debug only)
