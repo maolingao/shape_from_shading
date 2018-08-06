@@ -56,7 +56,7 @@ clear G
 
 % Set BFGS options
 opts_minfunc = [];
-opts_minfunc.display = 'iter';
+opts_minfunc.display = 'none';
 opts_minfunc.MaxIter = options.maxit_bfgs;
 opts_minfunc.optTol = options.tolX_bfgs;
 opts_minfunc.progTol = options.tolFun_bfgs;
@@ -164,7 +164,7 @@ for it = 1:options.maxit
 
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	% Nonlinear theta update
-	theta = minFunc(@(theta)theta_fun(theta,zx,zy,u_p,u_q,data.I,data.s,data.rho,options.beta,xx,yy,data.K,imask,params.lambda,params.nu),theta_before,opts_minfunc);
+	[theta,~,~,output] = minFunc(@(theta)theta_fun(theta,zx,zy,u_p,u_q,data.I,data.s,data.rho,options.beta,xx,yy,data.K,imask,params.lambda,params.nu),theta_before,opts_minfunc);
 	theta_p = theta(1:npix);
 	theta_q = theta(npix+1:2*npix);
 
@@ -194,7 +194,7 @@ for it = 1:options.maxit
 		M2 = [];
 	end
 	% PCG
-	z = pcg(mat_z,sec_z,options.tolFun_pcg,options.maxit_pcg,M1,M2,z_before);
+	[z,pcg_flag,relres,~,resvec] = pcg(mat_z,sec_z,options.tolFun_pcg,options.maxit_pcg,M1,M2,z_before);
 	% Update gradient
 	zx = Dx*z;
 	zy = Dy*z;
@@ -237,9 +237,9 @@ for it = 1:options.maxit
 	% Smoothness term
 	energy = energy+params.nu*sum(dz);
 	tab_energy = [tab_energy,energy];
-  % objective augumented Lagrangian
-  objective = energy + 0.5*options.beta * sum( (zx-theta_p).^2 + (zy-theta_q).^2 );
-  tab_objective = [tab_objective, objective];
+    % objective augumented Lagrangian
+    objective = energy + 0.5*options.beta * sum( (zx-theta_p).^2 + (zy-theta_q).^2 );
+    tab_objective = [tab_objective, objective];
 			
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	% Primal and dual residuals
@@ -251,8 +251,8 @@ for it = 1:options.maxit
 	relResDual = resDual./norm([u_p;u_q]);
 	tab_primal = [tab_primal,relResPrim];
 	tab_dual = [tab_dual,relResDual];
-  tab_primal_abs = [tab_primal_abs, resPrim];
-  tab_dual_abs = [tab_dual_abs, resDual];
+    tab_primal_abs = [tab_primal_abs, resPrim];
+    tab_dual_abs = [tab_dual_abs, resDual];
 
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	% Display
@@ -295,6 +295,18 @@ for it = 1:options.maxit
 		semilogy(0:it,tab_dual_abs)
 		title('absolute dual residual','Interpreter','Latex','Fontsize',18)
 	
+        % Fig 5 : optimization trace of theta
+        figure(5)
+        subplot(1,3,1)
+        semilogy(output.trace.funcCount, output.trace.fval)
+		title('objective $\theta$','Interpreter','Latex','Fontsize',18)
+        subplot(1,3,2)
+        semilogy(output.trace.funcCount, output.trace.optCond)
+		title('residual $\theta$','Interpreter','Latex','Fontsize',18)
+        subplot(1,3,3)
+        semilogy(resvec)
+		title('residual $z$','Interpreter','Latex','Fontsize',18)
+        
 		drawnow	
 	end	
 
