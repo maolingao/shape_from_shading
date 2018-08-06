@@ -98,7 +98,7 @@ params.nu = 0.05; % 0: no spatial regularization / >0: weight of the smoothing
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 options.precond_pcg = 'ichol'; % Preconditioner for the inner PCG iterations (can be 'none', 'ichol' or 'cmg')
 options.ratio = 1; % Ratio = n subsamples everything by a factor of n (useful for debug)
-options.display = 0; % Set to 1 to plot the result at each iteration, 0 otherwise
+options.display = 1; % Set to 1 to plot the result at each iteration, 0 otherwise
 
 options.maxit = 100; % Stopping criterion (max number of iterations)
 options.minit = 5; % Min number of iterations (because first iterations might be weird)

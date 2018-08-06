@@ -114,6 +114,8 @@ rk = NaN;
 sk = NaN;
 tab_primal = [norm(rk)];
 tab_dual = [norm(sk)];
+tab_primal_abs = [norm(rk)];
+tab_dual_abs = [norm(sk)];
 
 
 % Initial energy: shading + prior + smoothness
@@ -128,6 +130,10 @@ energy = energy + 0.5*params.mu*sum((z(imask_z0)-data.z0(imask_z0)).^2);
 energy = energy+params.nu*sum(dz);
 tab_energy = [energy];
 disp(sprintf('It. 0 - energy : %.6f',energy));
+% objective augumented Lagrangian
+objective = energy;
+tab_objective = [objective];
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Display
@@ -231,6 +237,9 @@ for it = 1:options.maxit
 	% Smoothness term
 	energy = energy+params.nu*sum(dz);
 	tab_energy = [tab_energy,energy];
+  % objective augumented Lagrangian
+  objective = energy + 0.5*options.beta * sum( (zx-theta_p).^2 + (zy-theta_q).^2 );
+  tab_objective = [tab_objective, objective];
 			
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	% Primal and dual residuals
@@ -242,22 +251,24 @@ for it = 1:options.maxit
 	relResDual = resDual./norm([u_p;u_q]);
 	tab_primal = [tab_primal,relResPrim];
 	tab_dual = [tab_dual,relResDual];
+  tab_primal_abs = [tab_primal_abs, resPrim];
+  tab_dual_abs = [tab_dual_abs, resDual];
 
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	% Display
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	if(options.display)
 		
-		% Fig 2 : shape
-		figure(2)
-		Ndx = zeros(size(data.mask));Ndx(imask) = N(:,1);
-		Ndy = zeros(size(data.mask));Ndy(imask) = N(:,2);
-		Ndz = zeros(size(data.mask));Ndz(imask) = -N(:,3);
-		Nd = 0.5*(1+cat(3,Ndx,Ndy,Ndz));
-		imshow(min(1,max(0,Nd)))
-		axis equal
-		axis off
-		title('Normals','Interpreter','Latex','Fontsize',18)
+%		% Fig 2 : shape
+%		figure(2)
+%		Ndx = zeros(size(data.mask));Ndx(imask) = N(:,1);
+%		Ndy = zeros(size(data.mask));Ndy(imask) = N(:,2);
+%		Ndz = zeros(size(data.mask));Ndz(imask) = -N(:,3);
+%		Nd = 0.5*(1+cat(3,Ndx,Ndy,Ndz));
+%		imshow(min(1,max(0,Nd)))
+%		axis equal
+%		axis off
+%		title('Normals','Interpreter','Latex','Fontsize',18)
 
 
 		% Fig 3 : energy
@@ -271,6 +282,18 @@ for it = 1:options.maxit
 		subplot(1,3,3)
 		semilogy(0:it,tab_dual)
 		title('Relative dual residual','Interpreter','Latex','Fontsize',18)
+    
+		% Fig 4 : objective augumented Lagrangian
+		figure(4)
+		subplot(1,3,1)
+		semilogy(0:it,tab_objective)
+		title('Objective augumented Lagrangian','Interpreter','Latex','Fontsize',18)
+		subplot(1,3,2)
+		semilogy(0:it,tab_primal_abs)
+		title('absolute primal residual','Interpreter','Latex','Fontsize',18)
+		subplot(1,3,3)
+		semilogy(0:it,tab_dual_abs)
+		title('absolute dual residual','Interpreter','Latex','Fontsize',18)
 	
 		drawnow	
 	end	
@@ -296,7 +319,8 @@ for it = 1:options.maxit
 	end
 	% Test
 	if((resFun<options.tolFun & it>options.minit) | (relResPrim < options.tolEps & relResDual < options.tolEps & ~dontstop & it > options.minit) | (resX <options.tolX & it>options.minit))
-		break;
+		display('============== break in CV test! ==============');
+    break;
 	end
 end
 
