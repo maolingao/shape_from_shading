@@ -110,11 +110,11 @@ options.tau = 10.0; % Update beta if primal/dual > tau
 options.eta = 2.0; % Multiply beta by eta if primal/dual > tau
 options.use_jac = 0; % 0: user-defined differentiation, 1: numerical
 options.check_grad = 'off'; % Set to 'on' to check jacobian (debug only)
-options.maxit_bfgs = 20; % Stopping criterion for the inner BFGS iterations
+options.maxit_bfgs = 50; % Stopping criterion for the inner BFGS iterations
 options.tolX_bfgs = 1e-9; % Stopping criterion for the inner BFGS iterations
-options.tolFun_bfgs = 1e-9; % Stopping criterion for the inner BFGS iterations
-options.maxit_pcg = 20; % Stopping criterion for the inner PCG iterations
-options.tolFun_pcg = 1e-9; % Stopping criterion for the inner PCG iterations
+options.tolFun_bfgs = 1e-10; % Stopping criterion for the inner BFGS iterations
+options.maxit_pcg = 50; % Stopping criterion for the inner PCG iterations
+options.tolFun_pcg = 1e-10; % Stopping criterion for the inner PCG iterations
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Call the routine

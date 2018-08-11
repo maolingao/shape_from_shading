@@ -244,7 +244,7 @@ for it = 1:options.maxit
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	% Primal and dual residuals
 	rk = [zx-theta_p;zy-theta_q];
-	sk = [-options.beta*(theta_p-theta_before(1:npix));-options.beta*(theta_q-theta_before(npix+1:2*npix))];
+	sk = [-options.beta*(Dx*(theta_p-theta_before(1:npix)));-options.beta*(Dy*(theta_q-theta_before(npix+1:2*npix)))];
 	resPrim = norm(rk);
 	resDual = norm(sk);
 	relResPrim = resPrim./max(norm([zx;zy]),norm([theta_p;theta_q]));
