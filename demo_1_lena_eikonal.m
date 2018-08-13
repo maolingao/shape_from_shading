@@ -98,7 +98,7 @@ options.display = 1; % Set to 1 to plot the result at each iteration, 0 otherwis
 
 options.maxit = 100; % Stopping criterion (max number of iterations)
 options.minit = 5; % Min number of iterations (because first iterations might be weird)
-options.tolFun = 1e-3; % Stopping criterion (relative difference on energy)
+options.tolFun = 1e-9; % Stopping criterion (relative difference on energy)
 options.tolX = 0.001*options.tolFun; % Stopping criterion (relative difference on depth)
 options.tolEps = 1e-3; % Stopping criterion (primal dual gap)
 options.beta = 1e0; % Initial stepsize on theta for ADMM iterations

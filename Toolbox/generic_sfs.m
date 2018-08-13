@@ -317,14 +317,14 @@ for it = 1:options.maxit
 	disp(sprintf('It. %d - energy: %.6f - resF: %.6f - resX: %.6f - resP: %.6f - resD: %.6f - beta: %.6f',it,energy,resFun,resX,relResPrim,relResDual,options.beta));
 	% Update penalty
 	if(resPrim/resDual > options.tau)
-		options.beta = options.eta*options.beta;
-		u_p = u_p./options.eta;
-		u_q = u_q./options.eta;
+%		options.beta = options.eta*options.beta;
+%		u_p = u_p./options.eta;
+%		u_q = u_q./options.eta;
 		dontstop = 1;
 	elseif(resDual/resPrim > options.tau)
-		options.beta = options.beta/options.eta;			
-		u_p = u_p.*options.eta;
-		u_q = u_q.*options.eta;
+%		options.beta = options.beta/options.eta;			
+%		u_p = u_p.*options.eta;
+%		u_q = u_q.*options.eta;
 		dontstop = 1;
 	else
 		dontstop = 0;
