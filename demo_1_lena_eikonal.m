@@ -96,12 +96,12 @@ options.precond_pcg = 'ichol'; % Preconditioner for the inner PCG iterations (ca
 options.ratio = 1; % Ratio = n subsamples everything by a factor of n (useful for debug)
 options.display = 1; % Set to 1 to plot the result at each iteration, 0 otherwise
 
-options.maxit = 100; % Stopping criterion (max number of iterations)
+options.maxit = 200; % Stopping criterion (max number of iterations)
 options.minit = 5; % Min number of iterations (because first iterations might be weird)
 options.tolFun = 1e-9; % Stopping criterion (relative difference on energy)
 options.tolX = 0.001*options.tolFun; % Stopping criterion (relative difference on depth)
 options.tolEps = 1e-3; % Stopping criterion (primal dual gap)
-options.beta = 1e0; % Initial stepsize on theta for ADMM iterations
+options.beta = 1e-1; % Initial stepsize on theta for ADMM iterations
 options.tau = 10.0; % Update beta if primal/dual > tau
 % why if primal/dual > tau, then ultiply beta by eta ?
 options.eta = 2.0; % Multiply beta by eta if primal/dual > tau

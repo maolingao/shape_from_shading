@@ -201,8 +201,8 @@ for it = 1:options.maxit
 
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	% Dual update
-	u_p = u_p + zx - theta_p;
-	u_q = u_q + zy - theta_q;
+	u_p = u_p + options.beta*(zx - theta_p);
+	u_q = u_q + options.beta*(zy - theta_q);
 
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	% dz, N updates
@@ -274,7 +274,7 @@ for it = 1:options.maxit
 		% Fig 3 : energy
 		figure(3)
 		subplot(1,3,1)
-		semilogy(0:it,tab_energy)
+		plot(0:it,tab_energy)
 		title('Energy','Interpreter','Latex','Fontsize',14)
 		subplot(1,3,2)
 		semilogy(0:it,tab_primal)
@@ -282,13 +282,13 @@ for it = 1:options.maxit
 		subplot(1,3,3)
 		semilogy(0:it,tab_dual)
 		title('Relative dual residual','Interpreter','Latex','Fontsize',14)
-%    set(gcf,'units','normalized','outerposition',[0 0 1 1])
-%    print(sprintf('log/fig3_itr%d.eps',it),"-depsc")
+    set(gcf,'units','normalized','outerposition',[0 0 1 1])
+    print(sprintf('log/fig3_itr%d.eps',it),"-depsc")
     
 		% Fig 4 : objective augumented Lagrangian
 		figure(4)
 		subplot(1,3,1)
-		semilogy(0:it,tab_objective)
+		plot(0:it,tab_objective)
 		title('Objective augumented Lagrangian','Interpreter','Latex','Fontsize',14)
 		subplot(1,3,2)
 		semilogy(0:it,tab_primal_abs)
@@ -296,13 +296,13 @@ for it = 1:options.maxit
 		subplot(1,3,3)
 		semilogy(0:it,tab_dual_abs)
 		title('absolute dual residual','Interpreter','Latex','Fontsize',14)
-    % set(gcf,'units','normalized','outerposition',[0 0 1 1])
-    % print(sprintf('log/obj_res_pd_itr%d.eps',it),"-depsc")
+    set(gcf,'units','normalized','outerposition',[0 0 1 1])
+    print(sprintf('log/obj_res_pd_itr%d.eps',it),"-depsc")
 	
     % Fig 5 : optimization trace of theta
     figure(5)
     subplot(1,3,1)
-    semilogy(output.trace.funcCount, output.trace.fval)
+    plot(output.trace.funcCount, output.trace.fval)
 		title('objective $\theta$','Interpreter','Latex','Fontsize',14)
     subplot(1,3,2)
     semilogy(output.trace.funcCount, output.trace.optCond)
@@ -310,8 +310,8 @@ for it = 1:options.maxit
     subplot(1,3,3)
     semilogy(resvec)
 		title('residual $z$','Interpreter','Latex','Fontsize',14)
-%    set(gcf,'units','normalized','outerposition',[0 0 1 1])
-%    print(sprintf('log/obj_res_lbfgs_pcg_itr%d.eps',it),"-depsc")
+    set(gcf,'units','normalized','outerposition',[0 0 1 1])
+    print(sprintf('log/obj_res_lbfgs_pcg_itr%d.eps',it),"-depsc")
         
 		drawnow	
 	end	
