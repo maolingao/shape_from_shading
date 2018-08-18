@@ -116,7 +116,7 @@ tab_primal = [norm(rk)];
 tab_dual = [norm(sk)];
 tab_primal_abs = [norm(rk)];
 tab_dual_abs = [norm(sk)];
-
+tab_beta = [options.beta];
 
 % Initial energy: shading + prior + smoothness
 energy = 0;
@@ -201,8 +201,8 @@ for it = 1:options.maxit
 
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	% Dual update
-	u_p = u_p + options.beta*(zx - theta_p);
-	u_q = u_q + options.beta*(zy - theta_q);
+	u_p = u_p + (zx - theta_p);
+	u_q = u_q + (zy - theta_q);
 
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	% dz, N updates
@@ -244,11 +244,11 @@ for it = 1:options.maxit
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	% Primal and dual residuals
 	rk = [zx-theta_p;zy-theta_q];
-	sk = [-options.beta*(Dx*(theta_p-theta_before(1:npix)));-options.beta*(Dy*(theta_q-theta_before(npix+1:2*npix)))];
+	sk = -options.beta*(Dx.'*(theta_p-theta_before(1:npix))) - options.beta*(Dy.'*(theta_q-theta_before(npix+1:2*npix)));
 	resPrim = norm(rk);
 	resDual = norm(sk);
 	relResPrim = resPrim./max(norm([zx;zy]),norm([theta_p;theta_q]));
-	relResDual = resDual./norm([u_p;u_q]);
+	relResDual = resDual./(options.beta*norm(Dx.'*u_p + Dy.'*u_q));
 	tab_primal = [tab_primal,relResPrim];
 	tab_dual = [tab_dual,relResDual];
     tab_primal_abs = [tab_primal_abs, resPrim];
@@ -273,41 +273,39 @@ for it = 1:options.maxit
 
 		% Fig 3 : energy
 		figure(3)
-		subplot(1,3,1)
+		subplot(3,3,1)
 		plot(0:it,tab_energy)
 		title('Energy','Interpreter','Latex','Fontsize',14)
-		subplot(1,3,2)
+		subplot(3,3,2)
 		semilogy(0:it,tab_primal)
 		title('Relative primal residual','Interpreter','Latex','Fontsize',14)
-		subplot(1,3,3)
+		subplot(3,3,3)
 		semilogy(0:it,tab_dual)
 		title('Relative dual residual','Interpreter','Latex','Fontsize',14)
     set(gcf,'units','normalized','outerposition',[0 0 1 1])
     print(sprintf('log/fig3_itr%d.eps',it),"-depsc")
     
 		% Fig 4 : objective augumented Lagrangian
-		figure(4)
-		subplot(1,3,1)
+		subplot(3,3,4)
 		plot(0:it,tab_objective)
 		title('Objective augumented Lagrangian','Interpreter','Latex','Fontsize',14)
-		subplot(1,3,2)
+		subplot(3,3,5)
 		semilogy(0:it,tab_primal_abs)
 		title('absolute primal residual','Interpreter','Latex','Fontsize',14)
-		subplot(1,3,3)
+		subplot(3,3,6)
 		semilogy(0:it,tab_dual_abs)
 		title('absolute dual residual','Interpreter','Latex','Fontsize',14)
     set(gcf,'units','normalized','outerposition',[0 0 1 1])
     print(sprintf('log/obj_res_pd_itr%d.eps',it),"-depsc")
 	
     % Fig 5 : optimization trace of theta
-    figure(5)
-    subplot(1,3,1)
-    plot(output.trace.funcCount, output.trace.fval)
-		title('objective $\theta$','Interpreter','Latex','Fontsize',14)
-    subplot(1,3,2)
+    subplot(3,3,7)
+    plot(tab_beta)
+		title('beta','Interpreter','Latex','Fontsize',14)
+    subplot(3,3,8)
     semilogy(output.trace.funcCount, output.trace.optCond)
 		title('residual $\theta$','Interpreter','Latex','Fontsize',14)
-    subplot(1,3,3)
+    subplot(3,3,9)
     semilogy(resvec)
 		title('residual $z$','Interpreter','Latex','Fontsize',14)
     set(gcf,'units','normalized','outerposition',[0 0 1 1])
@@ -335,6 +333,7 @@ for it = 1:options.maxit
 	else
 		dontstop = 0;
 	end
+  tab_beta = [tab_beta, options.beta];
 	% Test
 	if((resFun<options.tolFun & it>options.minit) | (relResPrim < options.tolEps & relResDual < options.tolEps & ~dontstop & it > options.minit) | (resX <options.tolX & it>options.minit))
 		display('============== break in CV test! ==============');
